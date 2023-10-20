@@ -2,6 +2,7 @@ package writer
 
 import (
 	"os"
+	"strings"
 
 	"github.com/sousair/hack-vm-translator/internal/parser"
 )
@@ -26,7 +27,7 @@ func NewHackAssemblyWriter(filename string) AssemblyWriter {
 
 	asmWriter := HackAssemblyWriter{
 		AssemblyFile: *asmFile,
-		Filename:     filename,
+		Filename:     filename[strings.LastIndex(filename, "/")+1:],
 	}
 
 	return &asmWriter

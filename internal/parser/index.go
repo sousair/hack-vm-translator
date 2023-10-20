@@ -21,6 +21,6 @@ type VMParser interface {
 
 type HackVMParser struct{}
 
-func NewHackVMParser() *HackVMParser {
+func NewHackVMParser() VMParser {
 	return &HackVMParser{}
 }

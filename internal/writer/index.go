@@ -9,6 +9,7 @@ import (
 type AssemblyWriter interface {
 	WriteArithmetic(command string, comparisonsCount *int)
 	WritePushPop(command parser.CommandType, segment string, index int)
+	CloseAssemblyFile()
 }
 
 type HackAssemblyWriter struct {
@@ -35,6 +36,10 @@ func NewHackAssemblyWriter(filename string) AssemblyWriter {
 	})
 
 	return &asmWriter
+}
+
+func (w *HackAssemblyWriter) CloseAssemblyFile() {
+	w.AssemblyFile.Close()
 }
 
 func (w *HackAssemblyWriter) writeIntoAssemblyFile(lines []string) {

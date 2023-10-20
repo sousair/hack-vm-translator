@@ -51,8 +51,9 @@ func main() {
 		} else {
 			vmWriter.WriteArithmetic(arg1, &comparisonCount)
 		}
-
 	}
+
+	defer vmWriter.CloseAssemblyFile()
 
 	if err := lineScanner.Err(); err != nil {
 		panic("Error while reading VM file")

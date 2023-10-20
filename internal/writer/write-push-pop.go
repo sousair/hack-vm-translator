@@ -12,13 +12,26 @@ func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment st
 		panic("Cannot pop into constant segment")
 	}
 
+	if segment == "pointer" {
+		if index > 1 || index < 0 {
+			panic("Invalid index for pointer segment")
+		}
+
+		if index == 0 {
+			segment = "this"
+		} else if index == 1 {
+			segment = "that"
+		}
+	}
+
 	memorySegments := map[string]string{
 		"local":    "LCL",
 		"argument": "ARG",
 		"this":     "THIS",
 		"that":     "THAT",
 		// !TODO: Check index for temp segment
-		"temp": "R5",
+		"temp":   "R" + strconv.Itoa(5+index),
+		"static": w.Filename + "." + strconv.Itoa(index),
 	}
 
 	if segment != "constant" {

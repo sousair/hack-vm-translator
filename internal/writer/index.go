@@ -13,6 +13,7 @@ type AssemblyWriter interface {
 }
 
 type HackAssemblyWriter struct {
+	Filename     string
 	AssemblyFile os.File
 }
 
@@ -25,6 +26,7 @@ func NewHackAssemblyWriter(filename string) AssemblyWriter {
 
 	asmWriter := HackAssemblyWriter{
 		AssemblyFile: *asmFile,
+		Filename:     filename,
 	}
 
 	// Init SP to first stack address (256)

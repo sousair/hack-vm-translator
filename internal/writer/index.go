@@ -29,14 +29,6 @@ func NewHackAssemblyWriter(filename string) AssemblyWriter {
 		Filename:     filename,
 	}
 
-	// Init SP to first stack address (256)
-	asmWriter.writeIntoAssemblyFile([]string{
-		"@256",
-		"D=A",
-		"@SP",
-		"M=D",
-	})
-
 	return &asmWriter
 }
 

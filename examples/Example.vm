@@ -1,0 +1,6 @@
+push constant 20
+push constant 10
+add
+push constant 30
+eq
+not

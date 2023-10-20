@@ -38,7 +38,7 @@ func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment st
 		w.writeIntoAssemblyFile([]string{
 			// Calculate the address of the segment[index] and store in A
 			"@" + memorySegments[segment],
-			"D=A",
+			"D=M",
 			"@" + strconv.Itoa(index),
 			"A=D+A",
 		})

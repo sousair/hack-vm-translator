@@ -1,12 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"os"
+	"strconv"
+	"strings"
 	"unicode"
+
+	"github.com/sousair/hack-vm-translator/internal/parser"
+	"github.com/sousair/hack-vm-translator/internal/writer"
 )
 
 func main() {
-	check_args()
+	checkArgs()
 
 	filename := os.Args[1]
 
@@ -18,14 +24,34 @@ func main() {
 	defer file.Close()
 
 	lineScanner := bufio.NewScanner(file)
+
+	vmParser := parser.NewHackVMParser()
+
+	asmFileName := filename[:strings.LastIndex(filename, ".")]
+	vmWriter := writer.NewHackAssemblyWriter(asmFileName)
+
+	comparisonCount := 0
 	for lineScanner.Scan() {
 		line := strings.TrimSpace(lineScanner.Text())
-
-		println(line)
-
 		if line == "" || strings.HasPrefix(line, "//") {
 			continue
 		}
+
+		commandType := vmParser.GetCommandType(line)
+		arg1, arg2 := vmParser.GetArgs(line)
+
+		if arg2 != "" {
+			index, err := strconv.Atoi(arg2)
+			if err != nil {
+				panic("Error while parsing push/pop index")
+			}
+
+			vmWriter.WritePushPop(commandType, arg1, index)
+			continue
+		} else {
+			vmWriter.WriteArithmetic(arg1, &comparisonCount)
+		}
+
 	}
 
 	if err := lineScanner.Err(); err != nil {
@@ -33,7 +59,7 @@ func main() {
 	}
 }
 
-func check_args() {
+func checkArgs() {
 	args := os.Args
 	if len(args) != 2 {
 		panic("Usage: vm-translator <File.vm>")
@@ -45,6 +71,7 @@ func check_args() {
 		panic("File name must start with an uppercase letter")
 	}
 
-	valid = true
-	return
+	if !strings.HasSuffix(filename, ".vm") {
+		panic("File extension must be .vm")
+	}
 }

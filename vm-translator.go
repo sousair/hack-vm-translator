@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"unicode"
@@ -63,10 +64,10 @@ func main() {
 func checkArgs() {
 	args := os.Args
 	if len(args) != 2 {
-		panic("Usage: vm-translator <File.vm>")
+		panic("Usage: vm-translator dir/path/<File.vm>")
 	}
 
-	filename := args[1]
+	filename := filepath.Base(args[1])
 
 	if !unicode.IsUpper(rune(filename[0])) {
 		panic("File name must start with an uppercase letter")

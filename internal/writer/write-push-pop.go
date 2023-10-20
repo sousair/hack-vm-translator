@@ -13,18 +13,6 @@ func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment st
 		panic("Cannot pop into constant segment")
 	}
 
-	if segment == "pointer" {
-		if index > 1 || index < 0 {
-			panic("Invalid index for pointer segment")
-		}
-
-		if index == 0 {
-			segment = "this"
-		} else if index == 1 {
-			segment = "that"
-		}
-	}
-
 	memorySegments := map[string]string{
 		"local":    "LCL",
 		"argument": "ARG",
@@ -44,6 +32,20 @@ func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment st
 			"A=D+A",
 		})
 	} else if slices.Contains([]string{"temp", "static"}, segment) {
+		w.writeIntoAssemblyFile([]string{
+			"@" + memorySegments[segment],
+		})
+	} else if segment == "pointer" {
+		if index > 1 || index < 0 {
+			panic("Invalid index for pointer segment")
+		}
+
+		if index == 0 {
+			segment = "this"
+		} else if index == 1 {
+			segment = "that"
+		}
+
 		w.writeIntoAssemblyFile([]string{
 			"@" + memorySegments[segment],
 		})

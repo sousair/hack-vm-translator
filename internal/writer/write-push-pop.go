@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/sousair/hack-vm-translator/internal/parser"
+	"golang.org/x/exp/slices"
 )
 
 func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment string, index int) {
@@ -34,7 +35,7 @@ func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment st
 		"static": w.Filename + "." + strconv.Itoa(index),
 	}
 
-	if segment != "constant" {
+	if slices.Contains([]string{"local", "argument", "this", "that"}, segment) {
 		w.writeIntoAssemblyFile([]string{
 			// Calculate the address of the segment[index] and store in A
 			"@" + memorySegments[segment],
@@ -42,7 +43,11 @@ func (w *HackAssemblyWriter) WritePushPop(command parser.CommandType, segment st
 			"@" + strconv.Itoa(index),
 			"A=D+A",
 		})
-	} else {
+	} else if slices.Contains([]string{"temp", "static"}, segment) {
+		w.writeIntoAssemblyFile([]string{
+			"@" + memorySegments[segment],
+		})
+	} else if segment == "constant" {
 		w.writeIntoAssemblyFile([]string{
 			"@" + strconv.Itoa(index),
 		})
